@@ -1,22 +1,30 @@
 
 # Import packages
 
-#https://www.linkedin.com/pulse/two-simple-ways-upload-csv-files-directly-postgresql-database-mishra/
-from sqlalchemy import create_engine
 import pandas as pd
+import numpy as np
 
-# Import data
-engine = create_engine("postgresql+psycopg2://postgres:srde@localhost:5432/postgres")
-df = pd.read_csv('data/deal_sample.csv')
 
-try:
-    df.to_sql('deal_sample', engine, if_exists= 'replace', index= False)
-    print("Done")
+def transform_data(df):
+    return
 
-except:
-    print("Sorry, some error has occurred!")
 
-finally:
-    engine.dispose()
+def main():
+    
+    # Import data
+    deal_sample = pd.read_csv('data/deal_sample.csv')
+    deal_activities_sample = pd.read_csv('data/deal_activities_sample.csv')
+    deal_updates_sample = pd.read_csv('data/deal_updates_sample.csv')
+    
 
-# Transform
+    transform_data(deal_sample)
+    
+    print(deal_sample.info())
+    print(deal_activities_sample.info())
+    print(deal_updates_sample.info())
+    print(np.unique(deal_updates_sample["update_type"]))
+
+    return
+
+if __name__ == "__main__":
+    main()
