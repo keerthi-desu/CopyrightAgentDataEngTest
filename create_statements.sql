@@ -1,4 +1,4 @@
---CREATE DATABASE CopyrightAgent;
+CREATE DATABASE CopyrightAgent;
 
 DROP TABLE IF EXISTS deal_sample CASCADE;
 DROP TABLE IF EXISTS deal_activities_sample CASCADE;
@@ -33,13 +33,10 @@ CREATE TABLE deal_updates_sample (
     update_type VARCHAR,
     old_value VARCHAR,
     new_value VARCHAR,
-    --PRIMARY KEY (deal_id, old_value, new_value), -- OR PK (deal_id, old_val, new_val)
+    --PRIMARY KEY (deal_id, update_type, new_value, old_value) OR PK (deal_id, old_val, new_val)
     FOREIGN KEY (deal_id) REFERENCES deal_sample(id)
 );
 
--- \copy deal_sample from 'data\deal_sample.csv' delimiter ',' csv header;
+-- \copy deal_sample from 'data\transformed_DS.csv' delimiter ',' csv header;
 -- \copy deal_activities_sample from 'data\deal_activities_sample.csv' delimiter ',' csv header;
--- \copy deal_updates_sample from 'data\deal_updates_sample.csv' delimiter ',' csv header;
-
-SELECT *
-FROM deal_sample;
+-- \copy deal_updates_sample from 'data\transformed_DUS.csv' delimiter ',' csv header;
