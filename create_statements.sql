@@ -1,4 +1,6 @@
-CREATE DATABASE CopyrightAgent;
+-- Create a new database for the tables: createdb -U postgres copyrightagent
+-- If database already exists, delete it (if not important) using: dropdb -U postgres copyrightagent
+-- Ctrl + A and run the the script!
 
 DROP TABLE IF EXISTS deal_sample CASCADE;
 DROP TABLE IF EXISTS deal_activities_sample CASCADE;
@@ -37,6 +39,10 @@ CREATE TABLE deal_updates_sample (
     FOREIGN KEY (deal_id) REFERENCES deal_sample(id)
 );
 
--- \copy deal_sample from 'data\transformed_DS.csv' delimiter ',' csv header;
--- \copy deal_activities_sample from 'data\deal_activities_sample.csv' delimiter ',' csv header;
--- \copy deal_updates_sample from 'data\transformed_DUS.csv' delimiter ',' csv header;
+
+-- To load data into the tables, access PostgreSQL using the terminal by executing this command: psql -U postgres -q copyrightagent
+
+-- After connecting to PostgreSQL, copy and paste the following commands
+\copy deal_sample from 'data\transformed_DS.csv' delimiter ',' csv header;
+\copy deal_activities_sample from 'data\deal_activities_sample.csv' delimiter ',' csv header;
+\copy deal_updates_sample from 'data\transformed_DUS.csv' delimiter ',' csv header;

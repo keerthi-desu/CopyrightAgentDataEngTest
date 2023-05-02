@@ -17,7 +17,7 @@ FROM (  SELECT DUS.deal_id, COUNT(DUS.update_type) AS number_of_deals
         GROUP BY DUS.deal_id)X;
 
 
--- Deals that have neither activities nor updates as inactive
+-- Deals that have neither activities nor updates (marked as inactive!)
 SELECT DS.id
 FROM deal_sample AS DS
 WHERE DS.id NOT IN (SELECT DAS.deal_id
@@ -26,7 +26,8 @@ WHERE DS.id NOT IN (SELECT DAS.deal_id
                     UNION
 
                     SELECT DUS.deal_id
-                    FROM deal_updates_sample AS DUS);
+                    FROM deal_updates_sample AS DUS)
+LIMIT 5;
 
 
 -- Finding the number of calls and emails made for deals that have been won
@@ -42,14 +43,33 @@ GROUP BY DAS.type;
 -- Deals which have either have no activities or activities done within the last two years
 SELECT DISTINCT DAS.deal_id
 FROM deal_activities_sample AS DAS
-WHERE EXTRACT('year' FROM CURRENT_DATE)-EXTRACT('year' FROM DAS.marked_as_done_ts) <= 2;
+WHERE EXTRACT('year' FROM CURRENT_DATE)-EXTRACT('year' FROM DAS.marked_as_done_ts) <= 2
+LIMIT 5;
 
 
---- Interesting query
--- Activities performed for each deal (that is not deleted?)
-CREATE VIEW activities_for_each_deal AS
+--- Interesting queries
+-- Activities performed for each deal that is not deleted
+DROP VIEW IF EXISTS activities_by_deal;
+CREATE VIEW activities_by_deal AS
 SELECT DAS.deal_id, DAS.type, COUNT(DAS.type)
 FROM deal_activities_sample AS DAS
 WHERE DAS.deleted IS FALSE
 GROUP BY DAS.deal_id, DAS.type
 ORDER BY DAS.deal_id, COUNT(DAS.type) ASC;
+
+SELECT ABD.deal_id, ABD.type, ABD.count, DS.Status
+FROM activities_by_deal AS ABD
+JOIN deal_sample AS DS ON DS.id = ABD.deal_id
+LIMIT 10;
+
+-- Top 5 singular type of activities performed for deals  
+SELECT ABD.deal_id, ABD.type, ABD.count, DS.Status
+FROM activities_by_deal AS ABD
+JOIN deal_sample AS DS ON DS.id = ABD.deal_id
+ORDER BY ABD.count DESC
+LIMIT 5;
+
+-- Average number of deals performed for cases that are won
+SELECT AVG(DS.Total_activites)
+FROM deal_sample AS DS
+WHERE DS.Status = 'won';
